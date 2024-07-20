@@ -1,0 +1,131 @@
+/* Start Global Rules */
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+}
+ul {
+  list-style: none;
+}
+/* End Golbal Rules */
+/* Start Components */
+
+/* End Components */
+/* Start Subscription */
+.SubscriptionNums {
+  background-color: #2b52c9;
+  color: white;
+  padding: 40px 20px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  width: 400px;
+}
+.SubscriptionNums .totalSubscription {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #365fda;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+.SubscriptionNums .totalSubscription :nth-child(1) {
+  font-size: 60px;
+  font-weight: 300;
+  margin: 0px;
+}
+.SubscriptionNums .BusinessSubscription :nth-child(1) {
+  font-size: 40px;
+  font-weight: 400;
+  margin: 0px;
+}
+.SubscriptionNums .BusinessSubscription :nth-child(2) {
+  color: rgba(255, 255, 255, 0.788);
+}
+/*  Start SubscriptionTracking */
+.SubscriptionTracking {
+  width: 65%;
+}
+.SubscriptionTracking .top {
+  border: 2px solid rgba(0, 0, 0, 0.062);
+  border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px;
+  -moz-border-radius: 5px 5px 0px 0px;
+  -ms-border-radius: 5px 5px 0px 0px;
+  -o-border-radius: 5px 5px 0px 0px;
+}
+.SubscriptionTracking .top div {
+  padding: 20px 50px;
+}
+.SubscriptionTracking .top div p:nth-child(1) {
+  font-size: 35px;
+  font-weight: 500;
+  margin-bottom: 0px;
+}
+.SubscriptionTracking .top div p:nth-child(2) {
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.425);
+  margin-bottom: 0px;
+}
+.SubscriptionTracking .bottomgraph {
+  width: 90%;
+}
+/*  End SubscriptionTracking */
+/* Start Subscription */
+.bottomgraph{
+    border: 2px solid rgba(0, 0, 0, 0.062);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  padding: 20px;
+}
+.Demographics .displayData {
+  border: 2px solid rgba(0, 0, 0, 0.062);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  padding: 10px 10px 0px 10px;
+}
+
+/* End Subscription  */
+/* Start Demographics */
+
+.displayData :nth-child(1) {
+  font-weight: bold;
+}
+#gender-percentage p,
+#gender-percentage2 p {
+  font-size: 14px;
+  text-align: left;
+}
+@media (max-width: 1366px) {
+  #gender-percentage p,
+#gender-percentage2 p {
+  font-size: 11px;
+  text-align: left;
+}
+}
+  /* #pie2,#pie{
+  width: 100px !important;
+  height: 100px !important;
+} */
+/* #bar2,#bar{
+  width: 250px !important;
+  height: 100px !important;
+} */
+/* End Demographics */

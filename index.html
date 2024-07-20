@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pedestrians Analytics</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+    <!-- Font-Awesome -->
+    <link rel="stylesheet" href="lib/font-awesome/css/all.min.css" />
+    <!-- Main Css -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Start topbar -->
+    <div
+      class="topbar d-flex align-items-center justify-content-between p-3 container"
+    >
+      <h3>Pedestrian screen report</h3>
+      <div
+        class="date d-flex align-items-center justify-content-center"
+        style="color: #cfcfcf"
+      >
+        <div class="dropdown">
+          <button class="btn btn-light" type="button">
+            <input
+              style="color: #2b2b2b"
+              type="text"
+              id="dateRangePicker"
+              class="form-control"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Start reportOptions -->
+    <div class="reportOptions container">
+      <button type="button" class="btn btn-light text-primary">
+        <i class="fa-solid fa-down-long me-1 text-primary"></i> Download
+      </button>
+      <button type="button" class="btn btn-light ms-2">
+        <i class="fa-solid fa-print me-2"></i>Print
+      </button>
+      <button type="button" class="btn btn-light ms-2">
+        <i class="fa-regular fa-floppy-disk me-2"></i>Save as
+      </button>
+    </div>
+    <!-- End reportOptions -->
+    <!-- End topbar -->
+    <!-- Start Subscription -->
+    <div
+      class="Subscription d-flex align-items-start justify-content-between p-3 mt-3 container"
+    >
+      <div class="SubscriptionNums">
+        <div class="totalSubscription">
+          <p id="totalPedestrians">4362</p>
+          <p>Total impression</p>
+        </div>
+        <div class="BusinessSubscription ms-3">
+          <p id="totalLockedAtScreen">42%</p>
+          <p>Total Attention</p>
+        </div>
+      </div>
+      <div class="SubscriptionTracking ms-4">
+        <div class="top d-flex align-items-center justify-content-around w-">
+          <div>
+            <p id="man">0</p>
+            <p>Total Men</p>
+          </div>
+          <div>
+            <p id="women">0</p>
+            <p>Total Women</p>
+          </div>
+          <div>
+            <p id="kids">0</p>
+            <p>Total Kids</p>
+          </div>
+        </div>
+        <div
+          class="bottomgraph mt-4 ms-4"
+          d-flex
+          align-items-center
+          justify-content-center
+        >
+          <canvas id="myChart" width="200" height="80"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- End Subscription -->
+    <!-- Start Subscription -->
+    <h5 class="container mb-2">Demographics</h5>
+    <div class="container">
+      <div class="Demographics row">
+        <div class="col-6">
+          <h4>Amprettions by age group :</h4>
+          <div class="displayData d-flex mt-3" style="height: 250px">
+            <div>
+              <canvas id="bar" width="300" height="250"></canvas>
+            </div>
+            <div class="d-flex align-items-center justify-content-center ms-4">
+              <canvas id="pie" width="130" height="130"></canvas>
+            </div>
+
+            <div
+              id="gender-percentage"
+              class="d-flex flex-column align-items-center justify-content-center mx-2"
+            ></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <h4>Attention by gender group :</h4>
+          <div class="displayData data d-flex mt-3" style="height: 250px">
+            <div>
+              <canvas id="bar2" width="300" height="200"></canvas>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-center ms-4">
+              <canvas id="pie2" width="130" height="130"></canvas>
+            </div>
+            <div
+              id="gender-percentage2"
+              class="d-flex flex-column align-items-center justify-content-center mx-2"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End Subscription -->
+    <!-- daterangepicker -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
+    ></script>
+
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix"></script>
+    <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
