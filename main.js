@@ -5,6 +5,77 @@ const pieCtx1 = document.getElementById("pie").getContext("2d");
 const barCtx2 = document.getElementById("bar2").getContext("2d");
 const pieCtx2 = document.getElementById("pie2").getContext("2d");
 
+// Heat map
+// dummy data
+var xValues = ["A", "B", "C", "D", "E"];
+
+var yValues = ["W", "X", "Y", "Z"];
+
+var zValues = [
+  [1, 0.0, 0.75, 0.75, 0.0],
+  [0.0, 0.0, 0.75, 0.75, 0.0],
+  [0.75, 0.75, 0.55, 0.75, 0.75],
+  [0.0, 0.0, 0.0, 0.75, 0.0],
+];
+
+var colorscaleValue = [
+  [0, "#add8e6"],
+  [1, "#8b0000"],
+];
+
+var data = [
+  {
+    x: xValues,
+    y: yValues,
+    z: zValues,
+    type: "heatmap",
+    colorscale: colorscaleValue,
+    showscale: false,
+  },
+];
+
+var layout = {
+  title: "Total Pedestrian per hour",
+  annotations: [],
+  xaxis: {
+    ticks: "",
+    side: "bottom",
+  },
+  yaxis: {
+    ticks: "",
+    ticksuffix: " ",
+    width: 700,
+    height: 700,
+    autosize: false,
+  },
+};
+
+for (var i = 0; i < yValues.length; i++) {
+  for (var j = 0; j < xValues.length; j++) {
+    var currentValue = zValues[i][j];
+    var textColor = "transparent";
+    var result = {
+      xref: "x1",
+      yref: "y1",
+      x: xValues[j],
+      y: yValues[i],
+      text: zValues[i][j],
+      font: {
+        family: "Arial",
+        size: 0,
+        color: "rgb(255, 0, 0)",
+      },
+      showarrow: false,
+      font: {
+        color: textColor,
+      },
+    };
+    layout.annotations.push(result);
+  }
+}
+
+Plotly.newPlot("myDiv", data, layout);
+
 const ctxData = {
   labels: ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
   datasets: [
@@ -48,7 +119,7 @@ const barData2 = {
   datasets: [
     {
       label: "",
-      data: [70, 55, 90,],
+      data: [70, 55, 90],
       backgroundColor: ["#2dd0c1", "#5b7af9", "#ff7557"],
       borderColor: ["#2dd0c1", "#5b7af9", "#ff7557"],
       borderWidth: 1,
@@ -79,7 +150,7 @@ const chart = new Chart(ctx, {
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
-            return tooltipItem.dataset.label + ": " + tooltipItem.raw + " %"; // Add % to tooltip
+            return tooltipItem.dataset.label + ": " + tooltipItem.raw; // Add % to tooltip
           },
         },
       },
@@ -234,7 +305,6 @@ const getData = (startDate, endDate) => {
       `https://testapi.6lb.menu/api/PedestriansReports?startDate=${startDate}&endDate=${endDate}`
     )
     .then((res) => {
-      console.log(res.data);
       let totalPedestrians =
         res.data.totalMen + res.data.totalWomen + res.data.totalKids;
       let totalLockedAtScreen =
@@ -263,9 +333,11 @@ const getData = (startDate, endDate) => {
       let totalWomenAttention = res.data.totalAttentionByWomen;
       let totalKidsAttention = res.data.totalAttentionByKids;
 
-      const newLabels = [];
+      let newLabels = [];
       const newData = [];
       const percentages = [];
+      const hours = [];
+      let formattedDate = [];
 
       if (startDate === endDate) {
         // Single day data handling
@@ -283,9 +355,9 @@ const getData = (startDate, endDate) => {
       } else {
         // Multiple days data handling
         res.data.days.forEach((day) => {
-          console.log(day);
-          const formattedDate = new Date(day.date).toISOString().split("T")[0];
+          formattedDate = new Date(day.date).toISOString().split("T")[0];
           newLabels.push(formattedDate); // Push formatted date to labels
+          hours.push(day.reportByHour);
 
           const total = day.totalMen + day.totalWomen + day.totalKids;
           newData.push(total);
@@ -405,7 +477,51 @@ const getData = (startDate, endDate) => {
       animateCounter("totalPedestrians", 0, totalPedestrians, 600);
       animateCounter("totalLockedAtScreen", 0, totalLockedAtScreen, 600);
 
-      
+      // Heatmap
+      let hoursPerDay = [];
+      let days = [];
+
+      if (startDate === endDate) {
+        newLabels = [];
+        res.data.days.forEach((day) => {
+          formattedDate = new Date(day.date).toISOString().split("T")[0];
+          newLabels.push(formattedDate); // Push formatted date to labels
+          day.reportByHour.forEach((hourData) => {
+            const hourTotal =
+              hourData.totalMen + hourData.totalWomen + hourData.totalKids;
+            hoursPerDay.push(hourTotal);
+          });
+          days.push(hoursPerDay);
+          hoursPerDay = [];
+        });
+      } else {
+        res.data.days.forEach((day) => {
+          day.reportByHour.forEach((hourData) => {
+            const hourTotal =
+              hourData.totalMen + hourData.totalWomen + hourData.totalKids;
+            hoursPerDay.push(hourTotal);
+          });
+          days.push(hoursPerDay);
+          hoursPerDay = [];
+        });
+      }
+
+      var data = [
+        {
+          x: [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23,
+          ],
+
+          y: newLabels,
+          z: days,
+          type: "heatmap",
+          colorscale: colorscaleValue,
+          showscale: false,
+        },
+      ];
+
+      Plotly.newPlot("myDiv", data, layout);
     })
     .catch((err) => {
       console.log(err);
@@ -495,7 +611,6 @@ $(function () {
     function (start, end, label) {
       const startDate = start.format("YYYY-MM-DD");
       const endDate = end.format("YYYY-MM-DD");
-      console.log(startDate + " " + endDate);
 
       // Fetch and update charts with new data
       getData(startDate, endDate);
@@ -533,11 +648,7 @@ animateCounter("totalPedestrians", 0, 4362, 600);
 animateCounter("totalLockedAtScreen", 0, 42, 600);
 
 // dummy data
-      displayGenderPercentages1(
-        50,
-        50,
-        50,25,70
-      );
-      displayGenderPercentages2(50, 50, 50);
-      
+displayGenderPercentages1(50, 50, 50, 25, 70);
+displayGenderPercentages2(50, 50, 50);
 
+//////////////
