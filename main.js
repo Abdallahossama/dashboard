@@ -7,75 +7,6 @@ const pieCtx2 = document.getElementById("pie2").getContext("2d");
 
 // Heat map
 // dummy data
-var xValues = ["A", "B", "C", "D", "E"];
-
-var yValues = ["W", "X", "Y", "Z"];
-
-var zValues = [
-  [1, 0.0, 0.75, 0.75, 0.0],
-  [0.0, 0.0, 0.75, 0.75, 0.0],
-  [0.75, 0.75, 0.55, 0.75, 0.75],
-  [0.0, 0.0, 0.0, 0.75, 0.0],
-];
-
-var colorscaleValue = [
-  [0, "#add8e6"],
-  [1, "#8b0000"],
-];
-
-var data = [
-  {
-    x: xValues,
-    y: yValues,
-    z: zValues,
-    type: "heatmap",
-    colorscale: colorscaleValue,
-    showscale: false,
-  },
-];
-
-var layout = {
-  title: "Total Pedestrian per hour",
-  annotations: [],
-  xaxis: {
-    ticks: "",
-    side: "bottom",
-  },
-  yaxis: {
-    ticks: "",
-    ticksuffix: " ",
-    width: 500,
-    height: 700,
-    autosize: false,
-  },
-};
-
-for (var i = 0; i < yValues.length; i++) {
-  for (var j = 0; j < xValues.length; j++) {
-    var currentValue = zValues[i][j];
-    var textColor = "transparent";
-    var result = {
-      xref: "x1",
-      yref: "y1",
-      x: xValues[j],
-      y: yValues[i],
-      text: zValues[i][j],
-      font: {
-        family: "Arial",
-        size: 0,
-        color: "rgb(255, 0, 0)",
-      },
-      showarrow: false,
-      font: {
-        color: textColor,
-      },
-    };
-    layout.annotations.push(result);
-  }
-}
-
-Plotly.newPlot("myDiv", data, layout);
-
 const ctxData = {
   labels: ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
   datasets: [
@@ -300,6 +231,88 @@ const pieChart2 = new Chart(pieCtx2, {
 
 // Function to get data and update charts
 const getData = (startDate, endDate) => {
+  document.getElementById("foot").textContent = "Foot Traffic Heatmap";
+  fetch(
+    `https://testapi.6lb.menu/api/PedestriansReports?startDate=${startDate}&endDate=${endDate}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      const dates = data.days.map((day) => day.date);
+      const hours = Array.from({ length: 24 }, (_, i) => i);
+      const footTrafficMatrix = Array.from({ length: 24 }, () =>
+        Array(dates.length).fill(0)
+      );
+
+      data.days.forEach((day, dayIndex) => {
+        day.reportByHour.forEach((report) => {
+          footTrafficMatrix[report.hour][dayIndex] =
+            report.totalMen + report.totalWomen + report.totalKids;
+        });
+      });
+
+      const heatmapData = [
+        {
+          z: footTrafficMatrix,
+          x: dates,
+          y: hours,
+          type: "heatmap",
+          colorscale: [
+            [0, "rgb(173, 216, 230)"], // very light blue
+            [0.09, "rgb(173, 216, 230)"], // very light blue
+            [0.1, "rgb(135, 206, 250)"], // light blue
+            [0.18, "rgb(135, 206, 250)"], // light blue
+            [0.2, "rgb(0, 0, 255)"], // blue
+            [0.36, "rgb(0, 0, 255)"], // blue
+            [0.4, "rgb(0, 0, 139)"], // dark blue
+            [0.72, "rgb(0, 0, 139)"], // dark blue
+            [0.8, "rgb(255, 0, 0)"], // red
+            [0.91, "rgb(255, 0, 0)"], // red
+            [1.0, "rgb(139, 0, 0)"], // dark red
+          ],
+          reversescale: false,
+          colorbar: {
+            title: "Foot Traffic",
+          },
+          text: footTrafficMatrix.map((row) =>
+            row.map((val) => val.toString())
+          ),
+          hoverinfo: "text",
+        },
+      ];
+
+      const annotations = [];
+      for (let i = 0; i < hours.length; i++) {
+        for (let j = 0; j < dates.length; j++) {
+          annotations.push({
+            x: dates[j],
+            y: hours[i],
+            text: footTrafficMatrix[i][j],
+            showarrow: false,
+            font: {
+              color: "white",
+              size: 12,
+              family: "Arial",
+              weight: "bold",
+            },
+          });
+        }
+      }
+
+      const layout = {
+        title: "Foot Traffic Heatmap",
+        xaxis: {
+          title: "Date",
+        },
+        yaxis: {
+          title: "Hour",
+          dtick: 1,
+          tickmode: "linear",
+        },
+        annotations: annotations,
+      };
+
+      Plotly.newPlot("heatmap", heatmapData, layout);
+    });
   axios
     .get(
       `https://testapi.6lb.menu/api/PedestriansReports?startDate=${startDate}&endDate=${endDate}`
@@ -341,7 +354,6 @@ const getData = (startDate, endDate) => {
       let formattedDate = [];
 
       if (startDate === endDate) {
-
         // Single day data handling
         const singleDayData = res.data.days[0]; // Assuming there's only one day in the array
 
@@ -478,52 +490,6 @@ const getData = (startDate, endDate) => {
       animateCounter("kids", 0, totalKids, 600); // Animate with actual totalKids value
       animateCounter("totalPedestrians", 0, totalPedestrians, 600);
       animateCounter("totalLockedAtScreen", 0, totalLockedAtScreen, 600);
-
-      // Heatmap
-      let hoursPerDay = [];
-      let days = [];
-
-      if (startDate === endDate) {
-        newLabels = [];
-        res.data.days.forEach((day) => {
-          formattedDate = new Date(day.date).toISOString().split("T")[0];
-          newLabels.push(formattedDate); // Push formatted date to labels
-          day.reportByHour.forEach((hourData) => {
-            const hourTotal =
-              hourData.totalMen + hourData.totalWomen + hourData.totalKids;
-            hoursPerDay.push(hourTotal);
-          });
-          days.push(hoursPerDay);
-          hoursPerDay = [];
-        });
-      } else {
-        res.data.days.forEach((day) => {
-          day.reportByHour.forEach((hourData) => {
-            const hourTotal =
-              hourData.totalMen + hourData.totalWomen + hourData.totalKids;
-            hoursPerDay.push(hourTotal);
-          });
-          days.push(hoursPerDay);
-          hoursPerDay = [];
-        });
-      }
-
-      var data = [
-        {
-          x: [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23,
-          ],
-
-          y: newLabels,
-          z: days,
-          type: "heatmap",
-          colorscale: colorscaleValue,
-          showscale: false,
-        },
-      ];
-
-      Plotly.newPlot("myDiv", data, layout);
     })
     .catch((err) => {
       console.log(err);
