@@ -44,7 +44,7 @@ var layout = {
   yaxis: {
     ticks: "",
     ticksuffix: " ",
-    width: 700,
+    width: 500,
     height: 700,
     autosize: false,
   },
@@ -305,6 +305,7 @@ const getData = (startDate, endDate) => {
       `https://testapi.6lb.menu/api/PedestriansReports?startDate=${startDate}&endDate=${endDate}`
     )
     .then((res) => {
+      console.log(res.data);
       let totalPedestrians =
         res.data.totalMen + res.data.totalWomen + res.data.totalKids;
       let totalLockedAtScreen =
@@ -340,6 +341,7 @@ const getData = (startDate, endDate) => {
       let formattedDate = [];
 
       if (startDate === endDate) {
+
         // Single day data handling
         const singleDayData = res.data.days[0]; // Assuming there's only one day in the array
 
@@ -355,7 +357,7 @@ const getData = (startDate, endDate) => {
       } else {
         // Multiple days data handling
         res.data.days.forEach((day) => {
-          formattedDate = new Date(day.date).toISOString().split("T")[0];
+          formattedDate = day.date.toString().split("T")[0];
           newLabels.push(formattedDate); // Push formatted date to labels
           hours.push(day.reportByHour);
 
